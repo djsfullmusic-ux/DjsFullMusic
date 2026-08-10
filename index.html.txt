@@ -1,0 +1,394 @@
+HTML
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DJS FULL MUSIC</title>
+    <style>
+        * { box-sizing: border-box; }
+        body, html { 
+            margin: 0; padding: 0; 
+            width: 100vw; height: 100vh; 
+            background: #050505; 
+            color: #ff00ff; 
+            font-family: 'Courier New', monospace; 
+            overflow: hidden; 
+            perspective: 1000px;
+        }
+
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            padding: 4px;
+        }
+
+        .station-container { 
+            width: 100%; max-width: 460px;
+            height: 100%; max-height: 99vh;
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            background: #12001a;
+            border: 2px solid #ff00ff;
+            padding: 6px;
+            border-radius: 12px;
+            transform: rotateX(1deg);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), 
+                        inset 0 0 15px rgba(255, 0, 255, 0.2);
+        }
+        
+        h1 { 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            text-shadow: 0 0 8px #ff00ff; 
+            font-size: 0.8rem;
+            margin: 0 0 2px 0;
+            text-align: center;
+            transform: translateZ(20px);
+        }
+        
+        .media-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* --- AUDIO BOX --- */
+        .audio-box { 
+            width: 100%;
+            flex: 0 0 auto;
+            background: #000;
+            border: 1px solid #ff00ff;
+            padding: 5px;
+            border-radius: 8px;
+            transform: translateZ(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5),
+                        inset 0 0 8px rgba(255, 0, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .audio-box p {
+            margin: 0 0 2px 0;
+            font-size: 0.6rem;
+            text-align: center;
+            text-shadow: 0 0 4px #ff00ff;
+        }
+
+        .visualizer-3d {
+            width: 100%; height: 70px; 
+            background: #000;
+            margin-bottom: 3px;
+            border-radius: 4px;
+            display: flex; justify-content: center; align-items: center;
+            position: relative;
+            border: 1px solid #ff00ff;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+            overflow: hidden;
+            transition: border-color 0.1s ease;
+        }
+
+        .dance-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.45;
+            z-index: 1;
+            transition: filter 0.05s ease;
+        }
+
+        .dj-img {
+            position: relative;
+            z-index: 2;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+        }
+
+        /* --- LETRAS 4D INDEPENDIENTES CON DESTELLOS Y BAILE RÍTMICO --- */
+        .djs-4d-text {
+            position: absolute;
+            z-index: 4;
+            display: flex;
+            gap: 2px;
+            pointer-events: none;
+            transform: translateZ(30px);
+        }
+
+        .djs-char {
+            display: inline-block;
+            font-size: 1.25rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #ffffff;
+            will-change: transform, color, text-shadow;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 8px #ff00ff;
+        }
+
+        /* --- ECUALIZADOR NEÓN TUPIDO --- */
+        .neon-equalizer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 3px;
+            pointer-events: none;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            z-index: 3;
+        }
+
+        .eq-bar {
+            width: 3.5px;
+            background: #ff00ff;
+            border-radius: 1px 1px 0 0;
+            box-shadow: 0 0 6px #ff00ff;
+            height: 10%; 
+            transition: height 0.05s ease;
+        }
+
+        audio { 
+            width: 100%; 
+            height: 26px;
+            outline: none;
+            border-radius: 4px;
+            background: #0f0f0f;
+            border: 1px solid #ff00ff;
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        /* --- VIDEO BOX --- */
+        .video-box { 
+            width: 100%;
+            flex: 0 0 140px;
+            background: #000;
+            border: 1px solid #ff00ff;
+            padding: 4px;
+            border-radius: 8px;
+            transform: translateZ(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5),
+                        inset 0 0 8px rgba(255, 0, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .video-box p {
+            margin: 0 0 2px 0;
+            font-size: 0.6rem;
+            text-align: center;
+            text-shadow: 0 0 4px #ff00ff;
+        }
+
+        .video-container {
+            width: 100%;
+            height: calc(100% - 15px);
+            background: #000;
+            border: 1px solid #ff00ff;
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        video { 
+            width: 100%; 
+            height: 100%;
+            object-fit: cover;
+            outline: none;
+            filter: none;
+        }
+
+        /* --- CHAT BOX --- */
+        .chat-box {
+            width: 100%;
+            flex: 1.4;
+            background: #12001a;
+            border: 1px solid #ff00ff;
+            padding: 4px;
+            border-radius: 8px;
+            transform: translateZ(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .chat-box p { text-align: center; margin: 0 0 2px 0; font-size: 0.6rem; flex-shrink: 0; }
+
+        .scanline { 
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(255, 0, 255, 0.02) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+            animation: scan 1s linear infinite;
+        }
+        @keyframes scan { 0% { background-position: 0 0; } 100% { background-position: 0 4px; } }
+    </style>
+    
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+
+<div class="scanline"></div>
+
+<div class="main-wrapper">
+    <div class="station-container">
+        <h1>[ DJS FULL MUSIC ]</h1>
+        
+        <div class="media-stack">
+            <!-- Reproductor de Audio -->
+            <div class="audio-box">
+                <p>AUDIO STREAM</p>
+                <div class="visualizer-3d" id="visualizerBox">
+                    <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWhkNGhndml4MWh2cnFveDN3NWZpcGJtbTNvYzM2M2d5Z2h4bjg2OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L1QZOw7R24E19H62Yq/giphy.gif" alt="Gente bailando" class="dance-bg" id="danceBg">
+                    <img src="" alt="The Best Music" class="dj-img" id="customImg">
+                    
+                    <!-- Letras Desglosadas para Baile Independiente y Destellos -->
+                    <div class="djs-4d-text" id="djsContainer">
+                        <span class="djs-char">D</span><span class="djs-char">J</span><span class="djs-char">S</span>
+                        <span class="djs-char">&nbsp;</span>
+                        <span class="djs-char">F</span><span class="djs-char">U</span><span class="djs-char">L</span><span class="djs-char">L</span>
+                        <span class="djs-char">&nbsp;</span>
+                        <span class="djs-char">M</span><span class="djs-char">U</span><span class="djs-char">S</span><span class="djs-char">I</span><span class="djs-char">C</span>
+                    </div>
+
+                    <div class="neon-equalizer" id="equalizer">
+                        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+                    </div>
+                </div>
+                <audio id="audioPlayer" controls crossorigin="anonymous" preload="metadata">
+                    <source src="https://radio.juanjuiserver.com:8050/radio.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+
+            <!-- Video Feed -->
+            <div class="video-box">
+                <p>VIDEO FEED</p>
+                <div class="video-container">
+                    <video id="videoPlayer" controls playsinline muted></video>
+                </div>
+            </div>
+
+            <!-- Chat -->
+            <div class="chat-box">
+                <p>LIVE CHAT</p>
+                <div id="cboxdiv" style="width: 100%; height: 100%; overflow: hidden; position: relative; border-radius: 4px; border: 1px solid #ff00ff; flex: 1;">
+                    <iframe src="https://www6.cbox.ws/box/?boxid=825135&boxtag=VtEyi5&sec=main&nologin=1" width="100%" height="100%" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto" style="border:0; height:100%;"></iframe>
+                </div>
+            </div>
+        </div>
+        
+        <small style="color: #ff00ff; opacity: 0.5; font-size: 0.5rem; margin-top: 1px;">iOS / Android Full View</small>
+    </div>
+</div>
+
+<script>
+    document.getElementById('customImg').src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+
+    const video = document.getElementById('videoPlayer');
+    const videoSrc = 'https://vivatv.juanjuiserver.com:3782/stream/play.m3u8';
+    
+    if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = videoSrc;
+    }
+
+    const audio = document.getElementById('audioPlayer');
+    const bars = document.querySelectorAll('.eq-bar');
+    const danceBg = document.getElementById('danceBg');
+    const visualizerBox = document.getElementById('visualizerBox');
+    const charSpans = document.querySelectorAll('.djs-char');
+    
+    let animInterval = null;
+    let hueValue = 0;
+
+    function startDynamicAnimation() {
+        if (animInterval) return;
+        animInterval = setInterval(() => {
+            if (audio.paused) return;
+            
+            hueValue = (hueValue + 12) % 360;
+            let secondaryHue = (hueValue + 120) % 360;
+            
+            // Animación ecualizador
+            bars.forEach((bar, index) => {
+                let randomHeight = Math.floor(Math.sin(Date.now() / 120 + index) * 35 + 50);
+                bar.style.height = randomHeight + '%';
+            });
+
+            // Fondo y borde dinámicos
+            danceBg.style.filter = `hue-rotate(${hueValue}deg) brightness(0.55) saturate(220%)`;
+            visualizerBox.style.borderColor = `hsl(${hueValue}, 100%, 65%)`;
+
+            // Baile independiente y destellos mágicos por cada letra al ritmo
+            charSpans.forEach((char, idx) => {
+                let time = Date.now() / 90 + idx * 0.7;
+                let yMove = Math.sin(time) * 4.5;
+                let xMove = Math.cos(time * 0.8) * 2;
+                let scaleVal = 1 + Math.abs(Math.sin(time * 1.2)) * 0.18;
+                let rotVal = Math.sin(time * 0.5) * 6;
+                
+                // Destellos aleatorios individuales de brillo extremo
+                let isSparkle = (idx + Math.floor(Date.now() / 150)) % 4 === 0;
+                let charColor = isSparkle ? '#ffffff' : `hsl(${(hueValue + idx * 20) % 360}, 100%, 88%)`;
+                let sparkleGlow = isSparkle ? '0 0 16px #ffffff, 0 0 30px #00ffff' : `0 0 10px hsl(${hueValue}, 100%, 60%), 0 0 20px hsl(${secondaryHue}, 100%, 50%)`;
+
+                char.style.transform = `translate(${xMove}px, ${yMove}px) scale(${scaleVal}) rotate(${rotVal}deg)`;
+                char.style.color = charColor;
+                char.style.textShadow = `0 2px 4px rgba(0,0,0,0.9), ${sparkleGlow}`;
+            });
+        }, 70);
+    }
+
+    function stopDynamicAnimation() {
+        if (animInterval) {
+            clearInterval(animInterval);
+            animInterval = null;
+        }
+    }
+
+    const startPlayback = () => {
+        audio.play().catch(e => console.log("Audio autoplay pendiente"));
+        startDynamicAnimation();
+        window.removeEventListener('touchstart', startPlayback);
+        window.removeEventListener('click', startPlayback);
+    };
+
+    window.addEventListener('touchstart', startPlayback);
+    window.addEventListener('click', startPlayback);
+    
+    audio.addEventListener('play', () => {
+        startDynamicAnimation();
+    });
+
+    audio.addEventListener('pause', () => {
+        stopDynamicAnimation();
+    });
+</script>
+
+</body>
+</html>
